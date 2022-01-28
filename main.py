@@ -8,7 +8,7 @@ BOT_TOKEN = "TOKEN"
 
 stakes = ["2€", "5€", "10€", "20€", "50€"]
 
-regexs = dict(
+regexes = dict(
     game_formats='^(Cash Game|Torneo)$',
     number_of_players='^(?:[2-9]|(?:[1-9][0-9])|100)$',
     stakes='^(2€|5€|10€|20€|50€)$',
@@ -27,7 +27,20 @@ insults = [
     'Ti freezo il conto.',
     'Hai rotto il cazzo.',
     'Pezzente morto di fame.',
-
+    "Strippacazzi.",
+    "Annusaculi.",
+    "Bidonaro.",
+    "Rimettiti i soldi nel culo, coglione!",
+    "Fumacazzi.",
+    "Sapevo che il tuo sport era ciucciare i feltrini delle sedie di un' osteria di Leno",
+    "Dai amici banniaml!",
+    "Sei meno uomo di me.",
+    "Sei un bot a pedali.",
+    "Hahahahahah pezzo di merda figlio di puttana.",
+    "Scrotocefalo.",
+    "Rembambit ensiminit da le marijuane.",
+    "Tò dit argota de mal? Tò apó dit che gò quater piante de dat embecile, ve a töle no?! Eh casso però figa.",
+    "C'è uno sbirro tra di noi..."
 ]
 
 are_handlers_set = False
@@ -58,11 +71,11 @@ def set_handlers():
         conv_handler = ConversationHandler(
             entry_points=[CommandHandler('newtable', new_table)],
             states={
-                ENTRIES: [MessageHandler(Filters.regex(regexs['game_formats']), entries)],
-                STAKE: [MessageHandler(Filters.regex(regexs['number_of_players']), stake)],
+                ENTRIES: [MessageHandler(Filters.regex(regexes['game_formats']), entries)],
+                STAKE: [MessageHandler(Filters.regex(regexes['number_of_players']), stake)],
                 OPEN_REGISTRATION: [
-                    MessageHandler(Filters.regex(regexs['stakes']), open_registration),
-                    MessageHandler(Filters.regex(regexs['poll']), open_registration),
+                    MessageHandler(Filters.regex(regexes['stakes']), open_registration),
+                    MessageHandler(Filters.regex(regexes['poll']), open_registration),
                 ]
             },
             fallbacks=[
@@ -73,7 +86,7 @@ def set_handlers():
 
         dispatcher.add_handler(conv_handler)
         dispatcher.add_handler(PollAnswerHandler(receive_poll_answer))
-        dispatcher.add_handler(MessageHandler(Filters.regex(regexs['register']), close_registration))
+        dispatcher.add_handler(MessageHandler(Filters.regex(regexes['register']), close_registration))
 
         are_handlers_set = True
 
@@ -139,8 +152,12 @@ def stake(update: Update, context: CallbackContext) -> int:
 
 
 def open_registration(update: Update, context: CallbackContext):
+    try:
+        selected_stake = stakes.index(update.message.text)
+    except ValueError:
+        selected_stake = 0
     context.bot_data.update(dict(
-        stake=update.message.text,
+        stake=selected_stake,
         registration_open=True
     ))
 
@@ -154,7 +171,7 @@ def open_registration(update: Update, context: CallbackContext):
              f"\n\nHost: {context.bot_data['hoster']}"
              f"\n🎲 {context.bot_data['format']}"
              f"\n👥 {context.bot_data['entries_limit']} max"
-             f"\n💸 {context.bot_data['stake']}",
+             f"\n💸 {stakes[context.bot_data['stake']]}",
         parse_mode=ParseMode.HTML,
         reply_markup=ReplyKeyboardMarkup(
             reply_keyboard,
@@ -194,10 +211,14 @@ def close_registration(update: Update, context: CallbackContext):
                 parse_mode=ParseMode.HTML,
                 reply_markup=ReplyKeyboardRemove()
             )
-            poll_id = context.bot_data["last_poll"]
-            context.bot.stop_poll(
-                context.bot_data[poll_id]["chat_id"], context.bot_data[poll_id]["message_id"]
-            )
+            try:
+                poll_id = context.bot_data["last_poll"]
+                context.bot.stop_poll(
+                    context.bot_data[poll_id]["chat_id"], context.bot_data[poll_id]["message_id"]
+                )
+            except KeyError:
+                pass
+
             context.bot_data['registration_open'] = False
 
 
