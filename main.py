@@ -95,7 +95,7 @@ def set_handlers():
         dispatcher.add_handler(conv_handler)
         dispatcher.add_handler(CallbackQueryHandler(button))
 
-        dispatcher.add_handler(CommandHandler('test', test_message))
+        # dispatcher.add_handler(CommandHandler('test', test_message))
         dispatcher.add_handler(CommandHandler('ban', ban))
 
         are_handlers_set = True
@@ -511,7 +511,7 @@ def table_button(update: Update, context: CallbackContext):
 
     table_id = query.data
     try:
-        table = context.bot_data[table_id]
+        table = context.bot_data['tables'][table_id]
     except KeyError:
         query.edit_message_text(
             text=f"<i>tavolo scaduto</i>",
