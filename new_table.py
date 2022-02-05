@@ -42,25 +42,25 @@ def new_table(update: Update, context: CallbackContext):
         except KeyError:
             break
 
+    context.chat_data.update(dict(
+        last_table_id=table_id
+    ))
+
     try:
-        bot_data = context.bot_data['table']
-        payload = {
-            "last_table_id": table_id,
-            table_id: {
-                "hoster": update.effective_user.mention_html()
-            }
-        }
-        bot_data.update(payload)
+        tables = context.bot_data['tables']
     except KeyError:
-        payload = {
-            "tables": {
-                "last_table_id": table_id,
-                table_id: {
-                    "hoster": update.effective_user.mention_html()
-                }
-            }
+        context.bot_data.update(dict(
+            tables=dict()
+        ))
+        tables = context.bot_data['tables']
+
+    payload = {
+        table_id: {
+            "hoster": update.effective_user.mention_html()
         }
-        context.bot_data.update(payload)
+    }
+
+    tables.update(payload)
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
@@ -75,7 +75,7 @@ def new_table(update: Update, context: CallbackContext):
 
 
 def location(update: Update, context: CallbackContext) -> int:
-    table_id = context.bot_data['tables']['last_table_id']
+    table_id = context.chat_data['last_table_id']
     context.bot_data['tables'][table_id].update(dict(
         location=update.message.text
     ))
@@ -93,7 +93,7 @@ def location(update: Update, context: CallbackContext) -> int:
 
 
 def receive_date(update: Update, context: CallbackContext) -> int:
-    table_id = context.bot_data['tables']['last_table_id']
+    table_id = context.chat_data['last_table_id']
     context.bot_data['tables'][table_id].update(dict(
         date=update.message.text
     ))
@@ -111,7 +111,7 @@ def receive_date(update: Update, context: CallbackContext) -> int:
 
 
 def receive_time(update: Update, context: CallbackContext) -> int:
-    table_id = context.bot_data['tables']['last_table_id']
+    table_id = context.chat_data['last_table_id']
     context.bot_data['tables'][table_id].update(dict(
         time=update.message.text
     ))
@@ -135,7 +135,7 @@ def receive_time(update: Update, context: CallbackContext) -> int:
 def game_format(update: Update, context: CallbackContext) -> int:
     selected_format = update.message.text
 
-    table_id = context.bot_data['tables']['last_table_id']
+    table_id = context.chat_data['last_table_id']
     context.bot_data['tables'][table_id].update(dict(
         format=selected_format,
         players=list()
@@ -163,7 +163,7 @@ def game_format(update: Update, context: CallbackContext) -> int:
 
 
 def entries(update: Update, context: CallbackContext) -> None:
-    table_id = context.bot_data['tables']['last_table_id']
+    table_id = context.chat_data['last_table_id']
     context.bot_data['tables'][table_id].update(dict(entries_limit=update.message.text))
     reply_keyboard = [STAKES]
 
@@ -181,7 +181,7 @@ def entries(update: Update, context: CallbackContext) -> None:
 
 
 def stake(update: Update, context: CallbackContext):
-    table_id = context.bot_data['tables']['last_table_id']
+    table_id = context.chat_data['last_table_id']
     table = context.bot_data['tables'][table_id]
     context.bot_data['tables'][table_id].update(dict(
         stake=update.message.text,
