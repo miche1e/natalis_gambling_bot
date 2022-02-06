@@ -1,5 +1,17 @@
+# main strings
+start_greet = "Ciao!"
+start_message = "Congratulazioni per essere arrivato nella chat con me!" \
+                "\nInizia subito a creare un tavolo con il comando /newtable o usa il comando /help per scoprire " \
+                "tutti i comandi! "
+help_text = "Comandi:" \
+            "\n\n<b>Chat privata</b>" \
+            "\n/newtable - organizza una partita" \
+            "\n\n<b>Gruppi</b>" \
+            "\n/ban [motivazione opzionale] - da usare in risposta ad un messaggio, propone un ban"
+
+# new_table strings
 invalid_data = "👮 Dati non validi"
-go_to_private_chat_message = "Ti è stato inviato un messaggio in <a href=\"tg://user?id={0}\">privato</a>."
+go_to_private_chat_message = "Questo comando funziona solo in <a href=\"tg://user?id={0}\">privato</a>."
 private_message = "🎺 Fai squillare le trombe! 📯\nInvia il comando /newtable per iniziare la creazione di un tavolo."
 location_text = "📍 Dove lo vuoi organizzare?"
 location_placeholder = "Location dell'evento"

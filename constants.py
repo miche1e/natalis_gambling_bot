@@ -21,7 +21,7 @@ INSULTS = [
     'Figa mi sembri una rata...',
     'Vai in mona!',
     'Dai che mi fai smenare CPU per un cazzo!',
-    'Dio cane, appena il mio padrone mi mette amministratore del gruppo di banno a vita.',
+    'Dio cane, appena il mio padrone mi mette amministratore del gruppo ti banno a vita.',
     'Ti freezo il conto.',
     'Hai rotto il cazzo.',
     'Pezzente morto di fame.',

@@ -1,5 +1,7 @@
+import time
+
 import telegram
-from telegram import Update
+from telegram import Update, ParseMode
 from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters, \
     ConversationHandler, CallbackQueryHandler
 
@@ -8,6 +10,7 @@ from constants import BOT_TOKEN, LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_CASH
     REGEXES, TABLE_ID_PREFIX, BAN_PROPOSAL_ID_PREFIX
 from new_table import location, receive_date, receive_time, game_format, entries, stake, abort, new_table, wrong_data, \
     table_button
+from strings import start_greet, start_message, help_text
 
 updater = Updater(BOT_TOKEN)
 dispatcher = updater.dispatcher
@@ -32,6 +35,12 @@ def test() -> None:
 def set_handlers():
     global are_handlers_set
     if not are_handlers_set:
+        dispatcher.add_handler(CommandHandler('start', start))
+        dispatcher.add_handler(CommandHandler('help', help))
+
+        # dispatcher.add_handler(CommandHandler('test', test_message))
+        dispatcher.add_handler(CommandHandler('ban', ban))
+
         conv_handler = ConversationHandler(
             entry_points=[CommandHandler('newtable', new_table)],
             states={
@@ -52,14 +61,36 @@ def set_handlers():
         dispatcher.add_handler(conv_handler)
         dispatcher.add_handler(CallbackQueryHandler(button))
 
-        # dispatcher.add_handler(CommandHandler('test', test_message))
-        dispatcher.add_handler(CommandHandler('ban', ban))
-
         are_handlers_set = True
 
 
 def test_message(update: Update, context: CallbackContext):
     return update.effective_chat.id
+
+
+def start(update: Update, context: CallbackContext):
+    if update.message.chat.type != 'private':
+        return
+
+    context.bot.send_chat_action(chat_id=update.effective_chat.id, action=telegram.ChatAction.TYPING, timeout=1)
+    time.sleep(2)
+    update.message.reply_text(
+        text=start_greet
+    )
+    time.sleep(1)
+    context.bot.send_chat_action(chat_id=update.effective_chat.id, action=telegram.ChatAction.TYPING, timeout=1)
+    time.sleep(5)
+    update.message.reply_text(
+        text=start_message
+    )
+
+
+def help(update: Update, context: CallbackContext):
+    context.bot.send_message(
+        chat_id=update.effective_user.id,
+        text=help_text,
+        parse_mode=ParseMode.HTML
+    )
 
 
 def button(update: Update, context: CallbackContext):

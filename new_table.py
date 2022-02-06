@@ -23,14 +23,14 @@ def wrong_data(update: Update, context: CallbackContext):
 
 def new_table(update: Update, context: CallbackContext):
     if update.message.chat.type != 'private':
-        update.message.reply_text(
-            text=go_to_private_chat_message.format(context.bot.id),
-            parse_mode=ParseMode.HTML
-        )
-
         context.bot.send_message(
             chat_id=update.effective_user.id,
             text=private_message
+        )
+
+        update.message.reply_text(
+            text=go_to_private_chat_message.format(context.bot.id),
+            parse_mode=ParseMode.HTML
         )
         return ConversationHandler.END
 

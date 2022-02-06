@@ -62,7 +62,8 @@ def ban(update: Update, context: CallbackContext):
             reason += " " + arg
 
     while True:
-        proposal_id = f"b{random.randint(10000, 99999)}"
+        random_number = random.randint(10000, 99999)
+        proposal_id = "B" + str(random_number)
         try:
             context.bot_data['ban_proposals'][proposal_id]
         except KeyError:
