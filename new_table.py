@@ -29,10 +29,13 @@ def wrong_data(update: Update, context: CallbackContext):
 
 def new_table(update: Update, context: CallbackContext):
     if update.message.chat.type != 'private':
-        context.bot.send_message(
-            chat_id=update.effective_user.id,
-            text=ngb_newtable_privateMessage
-        )
+        try:
+            context.bot.send_message(
+                chat_id=update.effective_user.id,
+                text=ngb_newtable_privateMessage
+            )
+        except:
+            pass
 
         update.message.reply_text(
             text=ngb_newtable_goToPrivateMessage.format(context.bot.id),
