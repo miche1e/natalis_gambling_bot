@@ -10,7 +10,7 @@ from constants import BOT_TOKEN, LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_CASH
     REGEXES, TABLE_ID_PREFIX, BAN_PROPOSAL_ID_PREFIX
 from new_table import location, receive_date, receive_time, game_format, entries, stake, abort, new_table, wrong_data, \
     table_button
-from strings import start_greet, start_message, help_text
+from strings import ngb_main_startGreet, ngb_main_startMessage, ngb_main_help
 
 updater = Updater(BOT_TOKEN)
 dispatcher = updater.dispatcher
@@ -75,20 +75,20 @@ def start(update: Update, context: CallbackContext):
     context.bot.send_chat_action(chat_id=update.effective_chat.id, action=telegram.ChatAction.TYPING, timeout=1)
     time.sleep(2)
     update.message.reply_text(
-        text=start_greet
+        text=ngb_main_startGreet
     )
     time.sleep(1)
     context.bot.send_chat_action(chat_id=update.effective_chat.id, action=telegram.ChatAction.TYPING, timeout=1)
     time.sleep(5)
     update.message.reply_text(
-        text=start_message
+        text=ngb_main_startMessage
     )
 
 
 def help(update: Update, context: CallbackContext):
     context.bot.send_message(
-        chat_id=update.effective_user.id,
-        text=help_text,
+        chat_id=update.effective_chat.id,
+        text=ngb_main_help,
         parse_mode=ParseMode.HTML
     )
 

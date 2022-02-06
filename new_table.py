@@ -6,16 +6,16 @@ from telegram.ext import CallbackContext, ConversationHandler
 
 from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_TOURNAMENT, ENTRIES_CASH_GAME, STAKES, INSULTS, \
     NGH_CHAT_ID, STAKE, TABLE_ID_PREFIX, GAME_FORMATS
-from strings import invalid_data, go_to_private_chat_message, private_message, location_text, location_placeholder, \
-    date_text, date_placeholder, time_text, time_placeholder, format_text, format_placeholder, players_text, \
-    number_of_players_text, number_of_players_placeholder, buy_in_text, buy_in_placeholder, open_registration, \
-    registration_button, registration_recap_start, table_expired, players_list_bullet_point, players_title, \
-    registration_open_label, registration_closed_label
+from strings import ngb_newtable_invalidData, ngb_newtable_goToPrivateMessage, ngb_newtable_privateMessage, ngb_newtable_locationText, ngb_newtable_locationPlaceholder, \
+    ngb_newtable_dateText, ngb_newtable_datePlaceholder, ngb_newtable_timeText, ngb_newtable_timePlaceholder, ngb_newtable_formatText, ngb_newtable_formatPlaceholder, ngb_newtable_playersText, \
+    ngb_newtable_playersNumberTexts, ngb_newtable_playersNumberPlaceholders, ngb_newtable_buyInText, ngb_newtable_buyInPlaceholder, ngb_newtable_openRegistration, \
+    ngb_newtable_registrationButton, ngb_newtable_registrationRecap, ngb_newtable_tableExpired, ngb_newtable_listBulletPoint, ngb_newtable_playersLable, \
+    ngb_newtable_registrationOpenLabel, ngb_newtable_registrationClosedLabel
 
 
 def wrong_data(update: Update, context: CallbackContext):
     update.message.reply_text(
-        text=invalid_data,
+        text=ngb_newtable_invalidData,
         reply_markup=ReplyKeyboardRemove()
     )
     return ConversationHandler.END
@@ -25,11 +25,11 @@ def new_table(update: Update, context: CallbackContext):
     if update.message.chat.type != 'private':
         context.bot.send_message(
             chat_id=update.effective_user.id,
-            text=private_message
+            text=ngb_newtable_privateMessage
         )
 
         update.message.reply_text(
-            text=go_to_private_chat_message.format(context.bot.id),
+            text=ngb_newtable_goToPrivateMessage.format(context.bot.id),
             parse_mode=ParseMode.HTML
         )
         return ConversationHandler.END
@@ -64,11 +64,11 @@ def new_table(update: Update, context: CallbackContext):
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
-        text=location_text,
+        text=ngb_newtable_locationText,
         reply_markup=ForceReply(
             force_reply=True,
             selective=True,
-            input_field_placeholder=location_placeholder
+            input_field_placeholder=ngb_newtable_locationPlaceholder
         )
     )
     return LOCATION
@@ -82,11 +82,11 @@ def location(update: Update, context: CallbackContext) -> int:
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
-        text=date_text,
+        text=ngb_newtable_dateText,
         reply_markup=ForceReply(
             force_reply=True,
             selective=True,
-            input_field_placeholder=date_placeholder
+            input_field_placeholder=ngb_newtable_datePlaceholder
         )
     )
     return DATE
@@ -100,11 +100,11 @@ def receive_date(update: Update, context: CallbackContext) -> int:
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
-        text=time_text,
+        text=ngb_newtable_timeText,
         reply_markup=ForceReply(
             force_reply=True,
             selective=True,
-            input_field_placeholder=time_placeholder
+            input_field_placeholder=ngb_newtable_timePlaceholder
         )
     )
     return TIME
@@ -119,13 +119,13 @@ def receive_time(update: Update, context: CallbackContext) -> int:
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
-        text=format_text,
+        text=ngb_newtable_formatText,
         reply_markup=ReplyKeyboardMarkup(
             reply_keyboard,
             one_time_keyboard=True,
             resize_keyboard=True,
             selective=True,
-            input_field_placeholder=format_placeholder
+            input_field_placeholder=ngb_newtable_formatPlaceholder
         ),
     )
 
@@ -141,14 +141,14 @@ def game_format(update: Update, context: CallbackContext) -> int:
         players=list()
     ))
 
-    message = players_text
+    message = ngb_newtable_playersText
     if selected_format == GAME_FORMATS[0]:
-        message += number_of_players_text[0]
-        placeholder = number_of_players_placeholder[0]
+        message += ngb_newtable_playersNumberTexts[0]
+        placeholder = ngb_newtable_playersNumberPlaceholders[0]
         return_value = ENTRIES_CASH_GAME
     else:
-        message += number_of_players_text[1]
-        placeholder = number_of_players_placeholder[1]
+        message += ngb_newtable_playersNumberTexts[1]
+        placeholder = ngb_newtable_playersNumberPlaceholders[1]
         return_value = ENTRIES_TOURNAMENT
 
     update.message.reply_text(
@@ -168,13 +168,13 @@ def entries(update: Update, context: CallbackContext) -> None:
     reply_keyboard = [STAKES]
 
     update.message.reply_text(
-        text=buy_in_text,
+        text=ngb_newtable_buyInText,
         reply_markup=ReplyKeyboardMarkup(
             reply_keyboard,
             one_time_keyboard=True,
             resize_keyboard=True,
             selective=True,
-            input_field_placeholder=buy_in_placeholder
+            input_field_placeholder=ngb_newtable_buyInPlaceholder
         ),
     )
     return STAKE
@@ -190,14 +190,14 @@ def stake(update: Update, context: CallbackContext):
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
-        text=open_registration,
+        text=ngb_newtable_openRegistration,
         parse_mode=ParseMode.HTML,
         reply_markup=ReplyKeyboardRemove()
     )
 
     keyboard = [[
         InlineKeyboardButton(
-            text=registration_button.format(len(table['players']), table['entries_limit']),
+            text=ngb_newtable_registrationButton.format(len(table['players']), table['entries_limit']),
             callback_data=table_id
         )
     ]]
@@ -206,7 +206,7 @@ def stake(update: Update, context: CallbackContext):
 
     context.bot.send_message(
         chat_id=NGH_CHAT_ID,
-        text=registration_recap_start.format(
+        text=ngb_newtable_registrationRecap.format(
             table['hoster'],
             table['location'],
             table['date'],
@@ -214,7 +214,7 @@ def stake(update: Update, context: CallbackContext):
             table['format'],
             table['entries_limit'],
             table['stake']
-        ) + registration_open_label,
+        ) + ngb_newtable_registrationOpenLabel,
         parse_mode=ParseMode.HTML,
         reply_markup=reply_markup
     )
@@ -230,7 +230,7 @@ def table_button(update: Update, context: CallbackContext):
         table = context.bot_data['tables'][table_id]
     except KeyError:
         query.edit_message_text(
-            text=table_expired,
+            text=ngb_newtable_tableExpired,
             parse_mode=ParseMode.HTML
         )
         return
@@ -244,7 +244,7 @@ def table_button(update: Update, context: CallbackContext):
 
     keyboard = [[
         InlineKeyboardButton(
-            text=registration_button.format(len(table['players']), table['entries_limit']),
+            text=ngb_newtable_registrationButton.format(len(table['players']), table['entries_limit']),
             callback_data=query.data
         )
     ]]
@@ -253,11 +253,11 @@ def table_button(update: Update, context: CallbackContext):
 
     players_list = ""
     for player in table['players']:
-        players_list += players_list_bullet_point.format(player)
+        players_list += ngb_newtable_listBulletPoint.format(player)
 
     if len(players) < int(table['entries_limit']):
         query.edit_message_text(
-            text=registration_recap_start.format(
+            text=ngb_newtable_registrationRecap.format(
                 table['hoster'],
                 table['location'],
                 table['date'],
@@ -265,14 +265,14 @@ def table_button(update: Update, context: CallbackContext):
                 table['format'],
                 table['entries_limit'],
                 table['stake']
-            ) + registration_open_label + players_title.format(players_list),
+            ) + ngb_newtable_registrationOpenLabel + ngb_newtable_playersLable.format(players_list),
             parse_mode=ParseMode.HTML,
             reply_markup=reply_markup
         )
     else:
         table['registration_open'] = False
         query.edit_message_text(
-            text=registration_recap_start.format(
+            text=ngb_newtable_registrationRecap.format(
                 table['hoster'],
                 table['location'],
                 table['date'],
@@ -280,7 +280,7 @@ def table_button(update: Update, context: CallbackContext):
                 table['format'],
                 table['entries_limit'],
                 table['stake']
-            ) + registration_closed_label + players_title.format(players_list),
+            ) + ngb_newtable_registrationClosedLabel + ngb_newtable_playersLable.format(players_list),
             parse_mode=ParseMode.HTML
         )
 

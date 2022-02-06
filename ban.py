@@ -3,16 +3,19 @@ import random
 from telegram import ParseMode, Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CallbackContext
 
-from constants import MIN_BAN_APPROVERS
+from constants import MIN_BAN_APPROVERS, BAN_PROPOSAL_ID_PREFIX
+from strings import ngb_ban_groupChatWarn, ngb_ban_instruction, ngb_ban_adminPromotion, ngb_ban_adminBanAttemptText, \
+    ngb_ban_adminBanAdminAttempt, ngb_ban_adminBanAttemptInsult, ngb_ban_noReason, ngb_ban_button, ngb_ban_recapMessage, \
+    ngb_ban_proposalExpired, ngb_ban_somethingWentWrong
 
 
 def ban(update: Update, context: CallbackContext):
     if update.message.chat.type == 'private':
-        update.message.reply_text("Puoi utilizzare questo comando solo in un gruppo.")
+        update.message.reply_text(ngb_ban_groupChatWarn)
         return
 
     if update.message.reply_to_message is None:
-        update.message.reply_text("Invia il comando come risposta all'utente che vuoi bannare.")
+        update.message.reply_text(ngb_ban_instruction)
         return
 
     chat_admins = context.bot.get_chat_administrators(update.message.chat.id)
@@ -23,8 +26,7 @@ def ban(update: Update, context: CallbackContext):
             break
 
     if not is_bot_admin:
-        update.message.reply_text("Per utilizzare questo comando devo prima essere promosso ad amministratore del "
-                                  "gruppo.")
+        update.message.reply_text(ngb_ban_adminPromotion)
         return
 
     caller = update.effective_user
@@ -34,7 +36,7 @@ def ban(update: Update, context: CallbackContext):
         if user_to_ban.id == admin.user.id:
             message = context.bot.send_message(
                 chat_id=update.effective_chat.id,
-                text=f"{caller.mention_html()} vuole bannare un amministratore.",
+                text=ngb_ban_adminBanAttemptText.format(caller.mention_html()),
                 parse_mode=ParseMode.HTML
             )
             try:
@@ -44,26 +46,26 @@ def ban(update: Update, context: CallbackContext):
                 )
                 context.bot.send_message(
                     chat_id=update.effective_chat.id,
-                    text=f"Fai ancora il figo coglione",
+                    text=ngb_ban_adminBanAttemptInsult,
                     parse_mode=ParseMode.HTML
                 )
             except:
                 message.edit_text(
-                    text=f"Lol 🐷",
+                    text=ngb_ban_adminBanAdminAttempt,
                     parse_mode=ParseMode.HTML
                 )
             return
 
     reason = ""
     if len(context.args) == 0:
-        reason = "Nessun motivo"
+        reason = ngb_ban_noReason
     else:
         for arg in context.args:
             reason += " " + arg
 
     while True:
         random_number = random.randint(10000, 99999)
-        proposal_id = "B" + str(random_number)
+        proposal_id = BAN_PROPOSAL_ID_PREFIX + str(random_number)
         try:
             context.bot_data['ban_proposals'][proposal_id]
         except KeyError:
@@ -83,18 +85,23 @@ def ban(update: Update, context: CallbackContext):
 
     keyboard = [[
         InlineKeyboardButton(
-            f"👨‍⚖ Ban tro'",
+            text=ngb_ban_button,
             callback_data=proposal_id
         )
     ]]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
+    approvers = len(context.bot_data['ban_proposals'][proposal_id]['approvers'])
     context.bot.send_message(
         chat_id=update.effective_chat.id,
-        text=f"{caller.mention_html()} vuola bannare {user_to_ban.mention_html()}."
-             f"\nMotivazione: <b>{reason}</b>."
-             f"\nApprovazioni: 0 / {MIN_BAN_APPROVERS}",
+        text=ngb_ban_recapMessage.format(
+            caller.mention_html(),
+            user_to_ban.mention_html(),
+            reason,
+            approvers,
+            MIN_BAN_APPROVERS
+        ),
         parse_mode=ParseMode.HTML,
         reply_markup=reply_markup
     )
@@ -110,7 +117,7 @@ def ban_button(update: Update, context: CallbackContext):
         ban_proposal = context.bot_data['ban_proposals'][proposal_id]
     except KeyError:
         query.edit_message_text(
-            text=f"<i>proposta di ban scaduta</i>",
+            text=ngb_ban_proposalExpired,
             parse_mode=ParseMode.HTML
         )
         return
@@ -124,7 +131,7 @@ def ban_button(update: Update, context: CallbackContext):
 
     keyboard = [[
         InlineKeyboardButton(
-            f"👨‍⚖ Ban tro'",
+            text=ngb_ban_button,
             callback_data=query.data
         )
     ]]
@@ -134,17 +141,25 @@ def ban_button(update: Update, context: CallbackContext):
     approvers = len(approvers_ids)
     if approvers < MIN_BAN_APPROVERS:
         query.edit_message_text(
-            text=f"{ban_proposal['caller'].mention_html()} vuola bannare {ban_proposal['user_to_ban'].mention_html()}."
-                 f"\nMotivazione: <b>{ban_proposal['reason']}</b>."
-                 f"\nApprovazioni: {approvers} / {MIN_BAN_APPROVERS}",
+            text=ngb_ban_recapMessage.format(
+                ban_proposal['caller'].mention_html(),
+                ban_proposal['user_to_ban'].mention_html(),
+                ban_proposal['reason'],
+                approvers,
+                MIN_BAN_APPROVERS
+            ),
             parse_mode=ParseMode.HTML,
             reply_markup=reply_markup
         )
     else:
         query.edit_message_text(
-            text=f"{ban_proposal['caller'].mention_html()} vuola bannare {ban_proposal['user_to_ban'].mention_html()}."
-                 f"\nMotivazione: <b>{ban_proposal['reason']}</b>."
-                 f"\nApprovazioni: {approvers} / {MIN_BAN_APPROVERS}",
+            text=ngb_ban_recapMessage.format(
+                ban_proposal['caller'].mention_html(),
+                ban_proposal['user_to_ban'].mention_html(),
+                ban_proposal['reason'],
+                approvers,
+                MIN_BAN_APPROVERS
+            ),
             parse_mode=ParseMode.HTML
         )
         try:
@@ -154,6 +169,6 @@ def ban_button(update: Update, context: CallbackContext):
             )
         except:
             query.edit_message_text(
-                text=f"<i>qualcosa è andato storto</i>",
+                text=ngb_ban_somethingWentWrong,
                 parse_mode=ParseMode.HTML
             )
