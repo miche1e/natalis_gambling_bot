@@ -7,9 +7,9 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandle
 
 from ban import ban_button, ban
 from constants import BOT_TOKEN, LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_CASH_GAME, ENTRIES_TOURNAMENT, STAKE, \
-    REGEXES, TABLE_ID_PREFIX, BAN_PROPOSAL_ID_PREFIX
+    REGEXES, TABLE_ID_PREFIX, BAN_PROPOSAL_ID_PREFIX, REGISTER, OPEN_REGISTRATION
 from new_table import location, receive_date, receive_time, game_format, entries, stake, abort, new_table, wrong_data, \
-    table_button
+    table_button, register, open_registration
 from strings import ngb_main_startGreet, ngb_main_startMessage, ngb_main_help
 
 updater = Updater(BOT_TOKEN)
@@ -50,7 +50,9 @@ def set_handlers():
                 GAME_FORMAT: [MessageHandler(Filters.regex(REGEXES['game_formats']), game_format)],
                 ENTRIES_CASH_GAME: [MessageHandler(Filters.regex(REGEXES['number_of_cash_game_players']), entries)],
                 ENTRIES_TOURNAMENT: [MessageHandler(Filters.regex(REGEXES['number_of_tournament_players']), entries)],
-                STAKE: [MessageHandler(Filters.regex(REGEXES['stakes']), stake)]
+                STAKE: [MessageHandler(Filters.regex(REGEXES['stakes']), stake)],
+                REGISTER: [MessageHandler(Filters.regex(REGEXES['registration_options']), register)],
+                OPEN_REGISTRATION: [MessageHandler(Filters.regex(REGEXES['open_registration']), open_registration)]
             },
             fallbacks=[
                 MessageHandler(Filters.text & ~Filters.command, wrong_data),

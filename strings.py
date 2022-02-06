@@ -28,7 +28,8 @@ ngb_ban_somethingWentWrong = "<i>qualcosa è andato storto</i>"
 # new_table strings
 ngb_newtable_invalidData = "👮 Dati non validi"
 ngb_newtable_goToPrivateMessage = "Questo comando funziona solo in <a href=\"tg://user?id={0}\">privato</a>."
-ngb_newtable_privateMessage = "🎺 Fai squillare le trombe! 📯\nInvia il comando /newtable per iniziare la creazione di un tavolo."
+ngb_newtable_privateMessage = "🎺 Fai squillare le trombe! 📯\nInvia il comando /newtable per iniziare la creazione " \
+                              "di un tavolo."
 ngb_newtable_locationText = "📍 Dove lo vuoi organizzare?"
 ngb_newtable_locationPlaceholder = "Location dell'evento"
 ngb_newtable_dateText = "🗓 Che giorno?\nRispetta il formato GG/MM/AAAA"
@@ -42,17 +43,46 @@ ngb_newtable_playersNumberTexts = ["2 e 9", "2 e 100"]
 ngb_newtable_playersNumberPlaceholders = ["2 - 9", "2 - 100"]
 ngb_newtable_buyInText = "💸 Qual è il buy-in?"
 ngb_newtable_buyInPlaceholder = "Scegli il buy-in"
+ngb_newtable_registrationMessage = "🐷 Vuoi prendere parte alla partita?"
+ngb_newtable_registrationPlaceholder = "Si / No"
+ngb_newtable_recapTitle = "<b>Recap:</b>\n"
 ngb_newtable_openRegistration = "🎺 <b>ISCRIZIONI APERTE</b> 📯\nÈ stato inviato il modulo d' iscrizione nel gruppo " \
                                 "della N.G.H.! "
 ngb_newtable_registrationButton = "🖐 Iscriviaml!  {0} / {1}"
-ngb_newtable_registrationRecap = "\n\nHost: {0}" \
-                           "\n📍 Presso {1}" \
-                           "\n🗓 il {2} alle {3}" \
-                           "\n🎲 {4}" \
-                           "\n👥 {5} max" \
-                           "\n💸 {6}"
+ngb_newtable_registrationRecap = "Host: {0}" \
+                                 "\n📍 Presso {1}" \
+                                 "\n🗓 il {2} alle {3}" \
+                                 "\n🎲 {4}" \
+                                 "\n👥 {5} max" \
+                                 "\n💸 {6}"
 ngb_newtable_registrationOpenLabel = "\n\n🎺 <b>ISCRIZIONI APERTE</b> 📯"
 ngb_newtable_registrationClosedLabel = "\n\n🚫 <b>ISCRIZIONI CHIUSE</b> 🚫"
 ngb_newtable_playersLable = "\nPlayers: {0}"
 ngb_newtable_listBulletPoint = "\n>{0}"
 ngb_newtable_tableExpired = "<i>tavolo scaduto</i>"
+ngb_newtable_abortInsults = [
+    'Coglione.',
+    'Hai fatto bene, avresti solo perso soldi.',
+    'Perdente.',
+    'Figa mi sembri una rata...',
+    'Vai in mona!',
+    'Dai che mi fai smenare CPU per un cazzo!',
+    'Dio cane, appena il mio padrone mi mette amministratore del gruppo ti banno a vita.',
+    'Ti freezo il conto.',
+    'Hai rotto il cazzo.',
+    'Pezzente morto di fame.',
+    "Strippacazzi.",
+    "Annusaculi.",
+    "Bidonaro.",
+    "Rimettiti i soldi nel culo, coglione!",
+    "Fumacazzi.",
+    "Sapevo che il tuo sport era ciucciare i feltrini delle sedie di un' osteria di Leno",
+    "Dai amici banniaml!",
+    "Sei meno uomo di me.",
+    "Sei un bot a pedali.",
+    "Hahahahahah pezzo di merda figlio di puttana.",
+    "Scrotocefalo.",
+    "Rembambit ensiminit da le marijuane.",
+    "Tò dit argota de mal? Tò apó dit che gò quater piante de dat embecile, ve a töle no?! Eh casso però figa.",
+    "C'è uno sbirro tra di noi..."
+]
