@@ -4,13 +4,19 @@ from telegram import Update, ParseMode, ForceReply, ReplyKeyboardMarkup, ReplyKe
     InlineKeyboardMarkup
 from telegram.ext import CallbackContext, ConversationHandler
 
-from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_TOURNAMENT, ENTRIES_CASH_GAME, STAKES, INSULTS, \
-    NGH_CHAT_ID, STAKE, TABLE_ID_PREFIX, GAME_FORMATS
-from strings import ngb_newtable_invalidData, ngb_newtable_goToPrivateMessage, ngb_newtable_privateMessage, ngb_newtable_locationText, ngb_newtable_locationPlaceholder, \
-    ngb_newtable_dateText, ngb_newtable_datePlaceholder, ngb_newtable_timeText, ngb_newtable_timePlaceholder, ngb_newtable_formatText, ngb_newtable_formatPlaceholder, ngb_newtable_playersText, \
-    ngb_newtable_playersNumberTexts, ngb_newtable_playersNumberPlaceholders, ngb_newtable_buyInText, ngb_newtable_buyInPlaceholder, ngb_newtable_openRegistration, \
-    ngb_newtable_registrationButton, ngb_newtable_registrationRecap, ngb_newtable_tableExpired, ngb_newtable_listBulletPoint, ngb_newtable_playersLable, \
-    ngb_newtable_registrationOpenLabel, ngb_newtable_registrationClosedLabel
+from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_TOURNAMENT, ENTRIES_CASH_GAME, STAKES_BUTTONS, \
+    NGH_CHAT_ID, STAKE, TABLE_ID_PREFIX, GAME_FORMATS_BUTTONS, OPEN_REGISTRATION, REGISTER, \
+    REGISTRATION_OPTIONS_BUTTONS, OPEN_REGISTRATION_BUTTONS
+from strings import ngb_newtable_invalidData, ngb_newtable_goToPrivateMessage, ngb_newtable_privateMessage, \
+    ngb_newtable_locationText, ngb_newtable_locationPlaceholder, \
+    ngb_newtable_dateText, ngb_newtable_datePlaceholder, ngb_newtable_timeText, ngb_newtable_timePlaceholder, \
+    ngb_newtable_formatText, ngb_newtable_formatPlaceholder, ngb_newtable_playersText, \
+    ngb_newtable_playersNumberTexts, ngb_newtable_playersNumberPlaceholders, ngb_newtable_buyInText, \
+    ngb_newtable_buyInPlaceholder, ngb_newtable_openRegistration, \
+    ngb_newtable_registrationButton, ngb_newtable_registrationRecap, ngb_newtable_tableExpired, \
+    ngb_newtable_listBulletPoint, ngb_newtable_playersLable, \
+    ngb_newtable_registrationOpenLabel, ngb_newtable_registrationClosedLabel, ngb_newtable_abortInsults, \
+    ngb_newtable_registrationPlaceholder, ngb_newtable_recapTitle, ngb_newtable_registrationMessage
 
 
 def wrong_data(update: Update, context: CallbackContext):
@@ -115,7 +121,7 @@ def receive_time(update: Update, context: CallbackContext) -> int:
     context.bot_data['tables'][table_id].update(dict(
         time=update.message.text
     ))
-    reply_keyboard = [GAME_FORMATS]
+    reply_keyboard = [GAME_FORMATS_BUTTONS]
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
@@ -137,12 +143,11 @@ def game_format(update: Update, context: CallbackContext) -> int:
 
     table_id = context.chat_data['last_table_id']
     context.bot_data['tables'][table_id].update(dict(
-        format=selected_format,
-        players=list()
+        format=selected_format
     ))
 
     message = ngb_newtable_playersText
-    if selected_format == GAME_FORMATS[0]:
+    if selected_format == GAME_FORMATS_BUTTONS[0]:
         message += ngb_newtable_playersNumberTexts[0]
         placeholder = ngb_newtable_playersNumberPlaceholders[0]
         return_value = ENTRIES_CASH_GAME
@@ -162,10 +167,10 @@ def game_format(update: Update, context: CallbackContext) -> int:
     return return_value
 
 
-def entries(update: Update, context: CallbackContext) -> None:
+def entries(update: Update, context: CallbackContext) -> int:
     table_id = context.chat_data['last_table_id']
     context.bot_data['tables'][table_id].update(dict(entries_limit=update.message.text))
-    reply_keyboard = [STAKES]
+    reply_keyboard = [STAKES_BUTTONS]
 
     update.message.reply_text(
         text=ngb_newtable_buyInText,
@@ -180,13 +185,63 @@ def entries(update: Update, context: CallbackContext) -> None:
     return STAKE
 
 
-def stake(update: Update, context: CallbackContext):
+def stake(update: Update, context: CallbackContext) -> int:
+    table_id = context.chat_data['last_table_id']
+    context.bot_data['tables'][table_id].update(dict(
+        stake=update.message.text
+    ))
+
+    reply_keyboard = [REGISTRATION_OPTIONS_BUTTONS]
+    update.message.reply_text(
+        text=ngb_newtable_registrationMessage,
+        reply_markup=ReplyKeyboardMarkup(
+            reply_keyboard,
+            one_time_keyboard=True,
+            resize_keyboard=True,
+            selective=True,
+            input_field_placeholder=ngb_newtable_registrationPlaceholder
+        ),
+    )
+    return REGISTER
+
+
+def register(update: Update, context: CallbackContext) -> int:
     table_id = context.chat_data['last_table_id']
     table = context.bot_data['tables'][table_id]
-    context.bot_data['tables'][table_id].update(dict(
-        stake=update.message.text,
-        registration_open=True
-    ))
+    table.update(dict(players=list()))
+    if update.message.text == REGISTRATION_OPTIONS_BUTTONS[0]:
+        table['players'].append(update.effective_user.mention_html())
+
+    keyboard = [OPEN_REGISTRATION_BUTTONS]
+    reply_markup = ReplyKeyboardMarkup(
+        keyboard=keyboard,
+        resize_keyboard=True,
+        one_time_keyboard=True,
+        selective=True
+    )
+
+    context.bot.send_message(
+        chat_id=update.effective_user.id,
+        text=ngb_newtable_recapTitle + ngb_newtable_registrationRecap.format(
+            table['hoster'],
+            table['location'],
+            table['date'],
+            table['time'],
+            table['format'],
+            table['entries_limit'],
+            table['stake']
+        ),
+        parse_mode=ParseMode.HTML,
+        reply_markup=reply_markup
+    )
+
+    return OPEN_REGISTRATION
+
+
+def open_registration(update: Update, context: CallbackContext):
+    table_id = context.chat_data['last_table_id']
+    table = context.bot_data['tables'][table_id]
+    table.update(dict(registration_open=True))
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
@@ -204,6 +259,13 @@ def stake(update: Update, context: CallbackContext):
 
     reply_markup = InlineKeyboardMarkup(keyboard)
 
+    players_recap = ""
+    if len(table['players']) > 0:
+        players_list = ""
+        for player in table['players']:
+            players_list += ngb_newtable_listBulletPoint.format(player)
+        players_recap = ngb_newtable_playersLable.format(players_list)
+
     context.bot.send_message(
         chat_id=NGH_CHAT_ID,
         text=ngb_newtable_registrationRecap.format(
@@ -214,7 +276,7 @@ def stake(update: Update, context: CallbackContext):
             table['format'],
             table['entries_limit'],
             table['stake']
-        ) + ngb_newtable_registrationOpenLabel,
+        ) + ngb_newtable_registrationOpenLabel + players_recap,
         parse_mode=ParseMode.HTML,
         reply_markup=reply_markup
     )
@@ -287,7 +349,7 @@ def table_button(update: Update, context: CallbackContext):
 
 def abort(update: Update, _: CallbackContext) -> int:
     update.message.reply_text(
-        random.choice(INSULTS),
+        random.choice(ngb_newtable_abortInsults),
         reply_markup=ReplyKeyboardRemove()
     )
 
