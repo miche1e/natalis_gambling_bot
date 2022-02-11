@@ -19,7 +19,7 @@ ngb_ban_adminBanAttemptInsult = "Fai ancora il figo coglione"
 ngb_ban_adminBanAdminAttempt = "Lol 🐷"
 ngb_ban_noReason = "Nessun motivo"
 ngb_ban_button = "👨‍⚖ Ban tro'"
-ngb_ban_recapMessage = "{0} vuola bannare {1}." \
+ngb_ban_recapMessage = "{0} vuole bannare {1}." \
                        "\nMotivazione: <b>{2}</b>." \
                        "\nApprovazioni: {3} / {4}"
 ngb_ban_proposalExpired = "<i>proposta di ban scaduta</i>"
@@ -30,6 +30,7 @@ ngb_newtable_invalidData = "👮 Dati non validi"
 ngb_newtable_goToPrivateMessage = "Questo comando funziona solo in <a href=\"tg://user?id={0}\">privato</a>."
 ngb_newtable_privateMessage = "🎺 Fai squillare le trombe! 📯\nInvia il comando /newtable per iniziare la creazione " \
                               "di un tavolo."
+ngb_newtable_abort = "👦🏿Dai amici organiziaml!👦🏿\n\n👶 Invia il comando /abort per annullare."
 ngb_newtable_locationText = "📍 Dove lo vuoi organizzare?"
 ngb_newtable_locationPlaceholder = "Location dell'evento"
 ngb_newtable_dateText = "🗓 Che giorno?\nRispetta il formato GG/MM/AAAA"

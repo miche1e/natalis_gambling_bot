@@ -3,7 +3,7 @@ import time
 import telegram
 from telegram import Update, ParseMode
 from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters, \
-    ConversationHandler, CallbackQueryHandler
+    ConversationHandler, CallbackQueryHandler, PicklePersistence
 
 from ban import ban_button, ban
 from constants import BOT_TOKEN, LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_CASH_GAME, ENTRIES_TOURNAMENT, STAKE, \
@@ -12,7 +12,8 @@ from new_table import location, receive_date, receive_time, game_format, entries
     table_button, register, open_registration
 from strings import ngb_main_startGreet, ngb_main_startMessage, ngb_main_help
 
-updater = Updater(BOT_TOKEN)
+persistence = PicklePersistence(filename='database')
+updater = Updater(BOT_TOKEN, persistence=persistence, use_context=True)
 dispatcher = updater.dispatcher
 
 are_handlers_set = False
@@ -57,7 +58,9 @@ def set_handlers():
             fallbacks=[
                 MessageHandler(Filters.text & ~Filters.command, wrong_data),
                 CommandHandler('abort', abort)
-            ]
+            ],
+            persistent=True,
+            name='conversation'
         )
 
         dispatcher.add_handler(conv_handler)
