@@ -1,4 +1,5 @@
 import random
+import time
 
 from telegram import Update, ParseMode, ForceReply, ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, \
     InlineKeyboardMarkup
@@ -6,7 +7,7 @@ from telegram.ext import CallbackContext, ConversationHandler
 
 from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_TOURNAMENT, ENTRIES_CASH_GAME, STAKES_BUTTONS, \
     NGH_CHAT_ID, STAKE, TABLE_ID_PREFIX, GAME_FORMATS_BUTTONS, OPEN_REGISTRATION, REGISTER, \
-    REGISTRATION_OPTIONS_BUTTONS, OPEN_REGISTRATION_BUTTONS
+    REGISTRATION_OPTIONS_BUTTONS, OPEN_REGISTRATION_BUTTONS, PERSISTENCE_DAYS
 from strings import ngb_newtable_invalidData, ngb_newtable_goToPrivateMessage, ngb_newtable_privateMessage, \
     ngb_newtable_locationText, ngb_newtable_locationPlaceholder, \
     ngb_newtable_dateText, ngb_newtable_datePlaceholder, ngb_newtable_timeText, ngb_newtable_timePlaceholder, \
@@ -16,7 +17,7 @@ from strings import ngb_newtable_invalidData, ngb_newtable_goToPrivateMessage, n
     ngb_newtable_registrationButton, ngb_newtable_registrationRecap, ngb_newtable_tableExpired, \
     ngb_newtable_listBulletPoint, ngb_newtable_playersLable, \
     ngb_newtable_registrationOpenLabel, ngb_newtable_registrationClosedLabel, ngb_newtable_abortInsults, \
-    ngb_newtable_registrationPlaceholder, ngb_newtable_recapTitle, ngb_newtable_registrationMessage
+    ngb_newtable_registrationPlaceholder, ngb_newtable_recapTitle, ngb_newtable_registrationMessage, ngb_newtable_abort
 
 
 def wrong_data(update: Update, context: CallbackContext):
@@ -47,7 +48,9 @@ def new_table(update: Update, context: CallbackContext):
         random_number = random.randint(10000, 99999)
         table_id = TABLE_ID_PREFIX + str(random_number)
         try:
-            context.bot_data['tables'][table_id]
+            random_table = context.bot_data['tables'][table_id]
+            if time.time() - random_table['timestamp'] > PERSISTENCE_DAYS * 24 * 60 * 60:
+                break
         except KeyError:
             break
 
@@ -70,6 +73,11 @@ def new_table(update: Update, context: CallbackContext):
     }
 
     tables.update(payload)
+
+    context.bot.send_message(
+        chat_id=update.effective_user.id,
+        text=ngb_newtable_abort
+    )
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
@@ -244,7 +252,10 @@ def register(update: Update, context: CallbackContext) -> int:
 def open_registration(update: Update, context: CallbackContext):
     table_id = context.chat_data['last_table_id']
     table = context.bot_data['tables'][table_id]
-    table.update(dict(registration_open=True))
+    table.update(dict(
+        registration_open=True,
+        timestamp=time.time()
+    ))
 
     context.bot.send_message(
         chat_id=update.effective_user.id,
