@@ -5,9 +5,10 @@ from telegram import Update, ParseMode, ForceReply, ReplyKeyboardMarkup, ReplyKe
     InlineKeyboardMarkup
 from telegram.ext import CallbackContext, ConversationHandler
 
+from config import CHAT_ID
 from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_TOURNAMENT, ENTRIES_CASH_GAME, STAKES_BUTTONS, \
-    NGH_CHAT_ID, STAKE, TABLE_ID_PREFIX, GAME_FORMATS_BUTTONS, OPEN_REGISTRATION, REGISTER, \
-    REGISTRATION_OPTIONS_BUTTONS, OPEN_REGISTRATION_BUTTONS, PERSISTENCE_DAYS
+    STAKE, TABLE_ID_PREFIX, GAME_FORMATS_BUTTONS, OPEN_REGISTRATION, REGISTER, REGISTRATION_OPTIONS_BUTTONS, \
+    OPEN_REGISTRATION_BUTTONS, PERSISTENCE_DAYS
 from strings import ngb_newtable_invalidData, ngb_newtable_goToPrivateMessage, ngb_newtable_privateMessage, \
     ngb_newtable_locationText, ngb_newtable_locationPlaceholder, \
     ngb_newtable_dateText, ngb_newtable_datePlaceholder, ngb_newtable_timeText, ngb_newtable_timePlaceholder, \
@@ -281,7 +282,7 @@ def open_registration(update: Update, context: CallbackContext):
         players_recap = ngb_newtable_playersLable.format(players_list)
 
     context.bot.send_message(
-        chat_id=NGH_CHAT_ID,
+        chat_id=CHAT_ID,
         text=ngb_newtable_registrationRecap.format(
             table['hoster'],
             table['location'],

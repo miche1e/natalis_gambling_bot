@@ -1,3 +1,4 @@
+import os
 import time
 
 import telegram
@@ -6,17 +7,28 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandle
     ConversationHandler, CallbackQueryHandler, PicklePersistence
 
 from ban import ban_button, ban
-from constants import BOT_TOKEN, LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_CASH_GAME, ENTRIES_TOURNAMENT, STAKE, \
+from config import TOKEN, PORT, DOMAIN
+from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_CASH_GAME, ENTRIES_TOURNAMENT, STAKE, \
     REGEXES, TABLE_ID_PREFIX, BAN_PROPOSAL_ID_PREFIX, REGISTER, OPEN_REGISTRATION
 from new_table import location, receive_date, receive_time, game_format, entries, stake, abort, new_table, wrong_data, \
     table_button, register, open_registration
 from strings import ngb_main_startGreet, ngb_main_startMessage, ngb_main_help
 
 persistence = PicklePersistence(filename='database')
-updater = Updater(BOT_TOKEN, persistence=persistence, use_context=True)
+updater = Updater(TOKEN, persistence=persistence, use_context=True)
 dispatcher = updater.dispatcher
 
 are_handlers_set = False
+
+
+def main() -> None:
+    set_handlers()
+    port = int(os.environ.get('PORT', PORT))
+    updater.start_webhook(listen="0.0.0.0",
+                          port=port,
+                          url_path=TOKEN,
+                          webhook_url=f"https://{DOMAIN}:{PORT}/{TOKEN}")
+    updater.idle()
 
 
 def webhook(request):
@@ -37,7 +49,7 @@ def set_handlers():
     global are_handlers_set
     if not are_handlers_set:
         dispatcher.add_handler(CommandHandler('start', start))
-        dispatcher.add_handler(CommandHandler('help', help))
+        dispatcher.add_handler(CommandHandler('help', help_command))
 
         # dispatcher.add_handler(CommandHandler('test', test_message))
         dispatcher.add_handler(CommandHandler('ban', ban))
@@ -69,7 +81,7 @@ def set_handlers():
         are_handlers_set = True
 
 
-def test_message(update: Update, context: CallbackContext):
+def test_message(update: Update, _: CallbackContext):
     return update.effective_chat.id
 
 
@@ -90,7 +102,7 @@ def start(update: Update, context: CallbackContext):
     )
 
 
-def help(update: Update, context: CallbackContext):
+def help_command(update: Update, context: CallbackContext):
     context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=ngb_main_help,
@@ -109,4 +121,5 @@ def button(update: Update, context: CallbackContext):
 
 
 if __name__ == "__main__":
-    test()
+    # test()
+    main()
