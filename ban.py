@@ -4,7 +4,7 @@ import time
 from telegram import ParseMode, Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CallbackContext
 
-from constants import MIN_BAN_APPROVERS, BAN_PROPOSAL_ID_PREFIX, PERSISTENCE_DAYS
+from constants import MIN_BAN_APPROVERS, BAN_PROPOSAL_ID_PREFIX, PERSISTENCE_DAYS, IDS_RANGE
 from strings import ngb_ban_groupChatWarn, ngb_ban_instruction, ngb_ban_adminPromotion, ngb_ban_adminBanAttemptText, \
     ngb_ban_adminBanAdminAttempt, ngb_ban_adminBanAttemptInsult, ngb_ban_noReason, ngb_ban_button, ngb_ban_recapMessage, \
     ngb_ban_proposalExpired, ngb_ban_somethingWentWrong
@@ -65,7 +65,7 @@ def ban(update: Update, context: CallbackContext):
             reason += " " + arg
 
     while True:
-        random_number = random.randint(10000, 99999)
+        random_number = random.randint(IDS_RANGE)
         proposal_id = BAN_PROPOSAL_ID_PREFIX + str(random_number)
         try:
             ban_proposal = context.bot_data['ban_proposals'][proposal_id]

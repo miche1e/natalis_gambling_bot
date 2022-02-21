@@ -8,7 +8,7 @@ from telegram.ext import CallbackContext, ConversationHandler
 from config import CHAT_ID
 from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_TOURNAMENT, ENTRIES_CASH_GAME, STAKES_BUTTONS, \
     STAKE, TABLE_ID_PREFIX, GAME_FORMATS_BUTTONS, OPEN_REGISTRATION, REGISTER, REGISTRATION_OPTIONS_BUTTONS, \
-    OPEN_REGISTRATION_BUTTONS, PERSISTENCE_DAYS
+    OPEN_REGISTRATION_BUTTONS, PERSISTENCE_DAYS, IDS_RANGE
 from strings import ngb_newtable_invalidData, ngb_newtable_goToPrivateMessage, ngb_newtable_privateMessage, \
     ngb_newtable_locationText, ngb_newtable_locationPlaceholder, \
     ngb_newtable_dateText, ngb_newtable_datePlaceholder, ngb_newtable_timeText, ngb_newtable_timePlaceholder, \
@@ -46,7 +46,7 @@ def new_table(update: Update, context: CallbackContext):
         return ConversationHandler.END
 
     while True:
-        random_number = random.randint(10000, 99999)
+        random_number = random.randint(IDS_RANGE)
         table_id = TABLE_ID_PREFIX + str(random_number)
         try:
             random_table = context.bot_data['tables'][table_id]
