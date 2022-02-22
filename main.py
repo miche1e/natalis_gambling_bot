@@ -7,7 +7,7 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandle
     ConversationHandler, CallbackQueryHandler, PicklePersistence
 
 from ban import ban_button, ban
-from config import TOKEN, PORT, DOMAIN
+from config import TOKEN, PORT, DOMAIN, USE_WEBHOOK
 from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_CASH_GAME, ENTRIES_TOURNAMENT, STAKE, \
     REGEXES, TABLE_ID_PREFIX, BAN_PROPOSAL_ID_PREFIX, REGISTER, OPEN_REGISTRATION
 from new_table import location, receive_date, receive_time, game_format, entries, stake, abort, new_table, wrong_data, \
@@ -23,26 +23,31 @@ are_handlers_set = False
 
 def main() -> None:
     set_handlers()
+    if USE_WEBHOOK:
+        start_webhook()
+    else:
+        start_polling()
+    updater.idle()
+
+
+def start_polling() -> None:
+    updater.start_polling()
+
+
+def start_webhook() -> None:
     port = int(os.environ.get('PORT', PORT))
     updater.start_webhook(listen="0.0.0.0",
                           port=port,
                           url_path=TOKEN,
                           webhook_url=f"https://{DOMAIN}:{PORT}/{TOKEN}")
-    updater.idle()
 
 
-def webhook(request):
+def entry_point(request):
     if request.method == "POST":
         set_handlers()
         update = Update.de_json(request.get_json(force=True), updater.bot)
         dispatcher.process_update(update)
     return "ok"
-
-
-def test() -> None:
-    set_handlers()
-    updater.start_polling()
-    updater.idle()
 
 
 def set_handlers():
@@ -121,5 +126,4 @@ def button(update: Update, context: CallbackContext):
 
 
 if __name__ == "__main__":
-    # test()
     main()
