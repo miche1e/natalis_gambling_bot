@@ -64,28 +64,35 @@ def ban(update: Update, context: CallbackContext):
         for arg in context.args:
             reason += " " + arg
 
+    try:
+        ban_proposals = context.bot_data['ban_proposals']
+    except KeyError:
+        context.bot_data.update(dict(
+            ban_proposals=dict()
+        ))
+        ban_proposals = context.bot_data['ban_proposals']
+
     while True:
         random_number = random.randint(*IDS_RANGE)
         proposal_id = BAN_PROPOSAL_ID_PREFIX + str(random_number)
         try:
-            ban_proposal = context.bot_data['ban_proposals'][proposal_id]
+            ban_proposal = ban_proposals[proposal_id]
             if time.time() - ban_proposal['timestamp'] > PERSISTENCE_DAYS * 24 * 60 * 60:
                 break
         except KeyError:
             break
 
     payload = {
-        "ban_proposals": {
-            proposal_id: {
-                "caller": caller,
-                "user_to_ban": user_to_ban,
-                "reason": reason,
-                "approvers": list(),
-                "timestamp": time.time()
-            }
+        proposal_id: {
+            "caller": caller,
+            "user_to_ban": user_to_ban,
+            "reason": reason,
+            "approvers": list(),
+            "timestamp": time.time()
         }
     }
-    context.bot_data.update(payload)
+
+    ban_proposals.update(payload)
 
     keyboard = [[
         InlineKeyboardButton(
