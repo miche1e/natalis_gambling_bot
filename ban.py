@@ -65,7 +65,7 @@ def ban(update: Update, context: CallbackContext):
             reason += " " + arg
 
     while True:
-        random_number = random.randint(IDS_RANGE)
+        random_number = random.randint(*IDS_RANGE)
         proposal_id = BAN_PROPOSAL_ID_PREFIX + str(random_number)
         try:
             ban_proposal = context.bot_data['ban_proposals'][proposal_id]

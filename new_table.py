@@ -46,7 +46,7 @@ def new_table(update: Update, context: CallbackContext):
         return ConversationHandler.END
 
     while True:
-        random_number = random.randint(IDS_RANGE)
+        random_number = random.randint(*IDS_RANGE)
         table_id = TABLE_ID_PREFIX + str(random_number)
         try:
             random_table = context.bot_data['tables'][table_id]
