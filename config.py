@@ -3,7 +3,7 @@ CHAT_ID = "CHAT_ID"
 
 # WEBHOOK SETTINGS
 """
-DOMAIN and PORT should be set only if USE_WEBHOOK is ´True´
+DOMAIN and PORT should be set only if USE_WEBHOOK is `True`
 """
 USE_WEBHOOK = False
 DOMAIN = "DOMAIN"
