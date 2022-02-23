@@ -19,7 +19,7 @@ from strings import ngb_newtable_invalidData, ngb_newtable_goToPrivateMessage, n
     ngb_newtable_listBulletPoint, ngb_newtable_playersLable, \
     ngb_newtable_registrationOpenLabel, ngb_newtable_registrationClosedLabel, ngb_newtable_abortInsults, \
     ngb_newtable_registrationPlaceholder, ngb_newtable_recapTitle, ngb_newtable_registrationMessage, ngb_newtable_abort, \
-    ngb_newtable_nullRevoke, ngb_rewtable_revokeTableNotFound
+    ngb_newtable_nullRevoke, ngb_rewtable_revokeTableNotFound, ngb_newtable_revokeRegistrationInfo
 
 
 def wrong_data(update: Update, _: CallbackContext):
@@ -71,8 +71,11 @@ def revoke_registration(update: Update, context: CallbackContext):
             table['time'],
             table['format'],
             table['entries_limit'],
-            table['stake']
-        ) + ngb_newtable_registrationOpenLabel + players_recap,
+            table['stake'],
+            ngb_newtable_registrationOpenLabel,
+            players_recap,
+            ngb_newtable_revokeRegistrationInfo
+        ),
         parse_mode=ParseMode.HTML,
         reply_markup=reply_markup
     )
@@ -290,7 +293,8 @@ def register(update: Update, context: CallbackContext) -> int:
             table['time'],
             table['format'],
             table['entries_limit'],
-            table['stake']
+            table['stake'],
+            "", "", ""
         ),
         parse_mode=ParseMode.HTML,
         reply_markup=reply_markup
@@ -339,8 +343,11 @@ def open_registration(update: Update, context: CallbackContext):
             table['time'],
             table['format'],
             table['entries_limit'],
-            table['stake']
-        ) + ngb_newtable_registrationOpenLabel + players_recap,
+            table['stake'],
+            ngb_newtable_registrationOpenLabel,
+            players_recap,
+            ngb_newtable_revokeRegistrationInfo
+        ),
         parse_mode=ParseMode.HTML,
         reply_markup=reply_markup
     )
@@ -402,8 +409,11 @@ def table_button(update: Update, context: CallbackContext):
                 table['time'],
                 table['format'],
                 table['entries_limit'],
-                table['stake']
-            ) + ngb_newtable_registrationOpenLabel + ngb_newtable_playersLable.format(players_list),
+                table['stake'],
+                ngb_newtable_registrationOpenLabel,
+                ngb_newtable_playersLable.format(players_list),
+                ngb_newtable_revokeRegistrationInfo
+            ),
             parse_mode=ParseMode.HTML,
             reply_markup=reply_markup
         )
@@ -417,8 +427,11 @@ def table_button(update: Update, context: CallbackContext):
                 table['time'],
                 table['format'],
                 table['entries_limit'],
-                table['stake']
-            ) + ngb_newtable_registrationClosedLabel + ngb_newtable_playersLable.format(players_list),
+                table['stake'],
+                ngb_newtable_registrationClosedLabel,
+                ngb_newtable_playersLable.format(players_list),
+                ngb_newtable_revokeRegistrationInfo
+            ),
             parse_mode=ParseMode.HTML
         )
 

@@ -1,18 +1,18 @@
 # main strings
-ngb_main_startGreet = "Ciao!"
-ngb_main_startMessage = "Congratulazioni per essere arrivato nella chat con me!" \
+ngb_main_startMessage = "Ciao!\nCongratulazioni per essere arrivato nella chat con me!" \
                         "\nInizia subito a creare un tavolo con il comando /newtable o usa il comando /help per " \
                         "scoprire tutti i comandi! "
-ngb_main_help = "Comandi:" \
-                "\n\n<b>Chat privata</b>" \
-                "\n/newtable - organizza una partita" \
-                "\n\n<b>Gruppi</b>" \
-                "\n/ban [motivazione opzionale] - da usare in risposta ad un messaggio, propone il ban del giocatore " \
-                "citato "
+ngb_main_help = "Comandi:\n" \
+                "\n/newtable - crea una partita <b>*</b>" \
+                "\n/abort - annulla la creazione <b>*</b>" \
+                "\n/revoke - revoca l'iscrizione della partita citata" \
+                "\n/ban [reason] - propone il ban del giocatore citato" \
+                "\n/help - invia la lista dei comandi" \
+                "\n\n<b>*</b> <i>comando valido solo in chat privata</i>"
 
 # ban strings
 ngb_ban_groupChatWarn = "Puoi utilizzare questo comando solo in un gruppo."
-ngb_ban_instruction = "↩️ Invia il comando come risposta all'utente che vuoi bannare."
+ngb_ban_instruction = "↩️ Rispondi al messaggio di un membro del gruppo per proporne l'allontanamento."
 ngb_ban_adminPromotion = "Per utilizzare questo comando devo prima essere promosso ad amministratore del gruppo."
 ngb_ban_adminBanAttemptText = "{0} vuole bannare un amministratore."
 ngb_ban_adminBanAttemptInsult = "Fai ancora il figo coglione"
@@ -27,7 +27,7 @@ ngb_ban_somethingWentWrong = "<i>qualcosa è andato storto</i>"
 
 # new_table strings
 ngb_newtable_invalidData = "👮 Dati non validi"
-ngb_newtable_nullRevoke = "↩️ Rispondi al messaggio della partita per revocare l'iscrizione."
+ngb_newtable_nullRevoke = "↩️ Rispondi al messaggio della partita per revocarene l'iscrizione."
 ngb_rewtable_revokeTableNotFound = "👻 Tavolo non trovato."
 ngb_newtable_goToPrivateMessage = "Questo comando funziona solo in <a href=\"tg://user?id={0}\">privato</a>."
 ngb_newtable_privateMessage = "🎺 Fai squillare le trombe! 📯\nInvia il comando /newtable per iniziare la creazione " \
@@ -57,11 +57,16 @@ ngb_newtable_registrationRecap = "Host: {0}" \
                                  "\n🗓 il {2} alle {3}" \
                                  "\n🎲 {4}" \
                                  "\n👥 {5} max" \
-                                 "\n💸 {6}"
+                                 "\n💸 {6}" \
+                                 "{7}" \
+                                 "{8}" \
+                                 "{9}"
 ngb_newtable_registrationOpenLabel = "\n\n🎺 <b>ISCRIZIONI APERTE</b> 📯"
 ngb_newtable_registrationClosedLabel = "\n\n🚫 <b>ISCRIZIONI CHIUSE</b> 🚫"
 ngb_newtable_playersLable = "\nPlayers: {0}"
-ngb_newtable_listBulletPoint = "\n>{0}"
+ngb_newtable_listBulletPoint = "\n-{0}"
+ngb_newtable_revokeRegistrationInfo = "\n\nℹ <i>cita questo messaggio inviando il comando /revoke per revocare " \
+                                      "l'iscrizione</i> "
 ngb_newtable_tableExpired = "<i>tavolo scaduto</i>"
 ngb_newtable_abortInsults = [
     'Coglione.',

@@ -1,7 +1,5 @@
 import os
-import time
 
-import telegram
 from telegram import Update, ParseMode
 from telegram.ext import Updater, CommandHandler, CallbackContext, MessageHandler, Filters, \
     ConversationHandler, CallbackQueryHandler, PicklePersistence
@@ -12,7 +10,7 @@ from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_CASH_GAME, ENTR
     REGEXES, TABLE_ID_PREFIX, BAN_PROPOSAL_ID_PREFIX, REGISTER, OPEN_REGISTRATION
 from new_table import location, receive_date, receive_time, game_format, entries, stake, abort, new_table, wrong_data, \
     table_button, register, open_registration, revoke_registration
-from strings import ngb_main_startGreet, ngb_main_startMessage, ngb_main_help
+from strings import ngb_main_startMessage, ngb_main_help
 
 persistence = PicklePersistence(filename='database')
 updater = Updater(TOKEN, persistence=persistence, use_context=True)
@@ -94,14 +92,6 @@ def start(update: Update, context: CallbackContext):
     if update.message.chat.type != 'private':
         return
 
-    context.bot.send_chat_action(chat_id=update.effective_chat.id, action=telegram.ChatAction.TYPING, timeout=1)
-    time.sleep(2)
-    update.message.reply_text(
-        text=ngb_main_startGreet
-    )
-    time.sleep(1)
-    context.bot.send_chat_action(chat_id=update.effective_chat.id, action=telegram.ChatAction.TYPING, timeout=1)
-    time.sleep(5)
     update.message.reply_text(
         text=ngb_main_startMessage
     )
