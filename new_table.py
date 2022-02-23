@@ -18,15 +18,64 @@ from strings import ngb_newtable_invalidData, ngb_newtable_goToPrivateMessage, n
     ngb_newtable_registrationButton, ngb_newtable_registrationRecap, ngb_newtable_tableExpired, \
     ngb_newtable_listBulletPoint, ngb_newtable_playersLable, \
     ngb_newtable_registrationOpenLabel, ngb_newtable_registrationClosedLabel, ngb_newtable_abortInsults, \
-    ngb_newtable_registrationPlaceholder, ngb_newtable_recapTitle, ngb_newtable_registrationMessage, ngb_newtable_abort
+    ngb_newtable_registrationPlaceholder, ngb_newtable_recapTitle, ngb_newtable_registrationMessage, ngb_newtable_abort, \
+    ngb_newtable_nullRevoke, ngb_rewtable_revokeTableNotFound
 
 
-def wrong_data(update: Update, context: CallbackContext):
+def wrong_data(update: Update, _: CallbackContext):
     update.message.reply_text(
         text=ngb_newtable_invalidData,
         reply_markup=ReplyKeyboardRemove()
     )
     return ConversationHandler.END
+
+
+def revoke_registration(update: Update, context: CallbackContext):
+    message = update.message.reply_to_message
+    if message is None:
+        update.message.reply_text(text=ngb_newtable_nullRevoke)
+        return
+
+    try:
+        table_id = context.bot_data['message_table_associations_dictionary'][message.message_id]
+        table = context.bot_data['tables'][table_id]
+        players_list = context.bot_data['tables'][table_id]['players']
+    except KeyError:
+        update.message.reply_text(text=ngb_rewtable_revokeTableNotFound)
+        return
+
+    players_list.remove(update.effective_user.mention_html())
+
+    keyboard = [[
+        InlineKeyboardButton(
+            text=ngb_newtable_registrationButton.format(len(table['players']), table['entries_limit']),
+            callback_data=table_id
+        )
+    ]]
+
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    players_recap = ""
+    if len(table['players']) > 0:
+        players_list = ""
+        for player in table['players']:
+            players_list += ngb_newtable_listBulletPoint.format(player)
+        players_recap = ngb_newtable_playersLable.format(players_list)
+    context.bot.edit_message_text(
+        chat_id=CHAT_ID,
+        message_id=message.message_id,
+        text=ngb_newtable_registrationRecap.format(
+            table['hoster'],
+            table['location'],
+            table['date'],
+            table['time'],
+            table['format'],
+            table['entries_limit'],
+            table['stake']
+        ) + ngb_newtable_registrationOpenLabel + players_recap,
+        parse_mode=ParseMode.HTML,
+        reply_markup=reply_markup
+    )
 
 
 def new_table(update: Update, context: CallbackContext):
@@ -281,7 +330,7 @@ def open_registration(update: Update, context: CallbackContext):
             players_list += ngb_newtable_listBulletPoint.format(player)
         players_recap = ngb_newtable_playersLable.format(players_list)
 
-    context.bot.send_message(
+    message = context.bot.send_message(
         chat_id=CHAT_ID,
         text=ngb_newtable_registrationRecap.format(
             table['hoster'],
@@ -295,6 +344,18 @@ def open_registration(update: Update, context: CallbackContext):
         parse_mode=ParseMode.HTML,
         reply_markup=reply_markup
     )
+
+    message_table_association = {message.message_id: table_id}
+
+    try:
+        message_table_association_dictionary = context.bot_data['message_table_associations_dictionary']
+    except KeyError:
+        context.bot_data.update(dict(
+            message_table_associations_dictionary=dict()
+        ))
+        message_table_association_dictionary = context.bot_data['message_table_associations_dictionary']
+
+    context.bot_data['message_table_associations_dictionary'].update(message_table_association)
     return ConversationHandler.END
 
 

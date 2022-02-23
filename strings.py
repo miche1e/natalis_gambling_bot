@@ -12,7 +12,7 @@ ngb_main_help = "Comandi:" \
 
 # ban strings
 ngb_ban_groupChatWarn = "Puoi utilizzare questo comando solo in un gruppo."
-ngb_ban_instruction = "Invia il comando come risposta all'utente che vuoi bannare."
+ngb_ban_instruction = "↩️ Invia il comando come risposta all'utente che vuoi bannare."
 ngb_ban_adminPromotion = "Per utilizzare questo comando devo prima essere promosso ad amministratore del gruppo."
 ngb_ban_adminBanAttemptText = "{0} vuole bannare un amministratore."
 ngb_ban_adminBanAttemptInsult = "Fai ancora il figo coglione"
@@ -27,6 +27,8 @@ ngb_ban_somethingWentWrong = "<i>qualcosa è andato storto</i>"
 
 # new_table strings
 ngb_newtable_invalidData = "👮 Dati non validi"
+ngb_newtable_nullRevoke = "↩️ Rispondi al messaggio della partita per revocare l'iscrizione."
+ngb_rewtable_revokeTableNotFound = "👻 Tavolo non trovato."
 ngb_newtable_goToPrivateMessage = "Questo comando funziona solo in <a href=\"tg://user?id={0}\">privato</a>."
 ngb_newtable_privateMessage = "🎺 Fai squillare le trombe! 📯\nInvia il comando /newtable per iniziare la creazione " \
                               "di un tavolo."

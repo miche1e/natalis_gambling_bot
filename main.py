@@ -11,7 +11,7 @@ from config import TOKEN, PORT, DOMAIN, USE_WEBHOOK
 from constants import LOCATION, DATE, TIME, GAME_FORMAT, ENTRIES_CASH_GAME, ENTRIES_TOURNAMENT, STAKE, \
     REGEXES, TABLE_ID_PREFIX, BAN_PROPOSAL_ID_PREFIX, REGISTER, OPEN_REGISTRATION
 from new_table import location, receive_date, receive_time, game_format, entries, stake, abort, new_table, wrong_data, \
-    table_button, register, open_registration
+    table_button, register, open_registration, revoke_registration
 from strings import ngb_main_startGreet, ngb_main_startMessage, ngb_main_help
 
 persistence = PicklePersistence(filename='database')
@@ -55,9 +55,9 @@ def set_handlers():
     if not are_handlers_set:
         dispatcher.add_handler(CommandHandler('start', start))
         dispatcher.add_handler(CommandHandler('help', help_command))
-
-        # dispatcher.add_handler(CommandHandler('test', test_message))
         dispatcher.add_handler(CommandHandler('ban', ban))
+        dispatcher.add_handler(CommandHandler('revoke', revoke_registration))
+        # dispatcher.add_handler(CommandHandler('test', test_message))
 
         conv_handler = ConversationHandler(
             entry_points=[CommandHandler('newtable', new_table)],
